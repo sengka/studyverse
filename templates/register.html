@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StudyVerse - Kayıt Ol</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background: url('https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #1d2d44;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(8px);
+      z-index: 0;
+    }
+
+    .register-container {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 3rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+    }
+
+    .register-container h1 {
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1d2d44;
+    }
+
+    .register-container input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+
+    .register-container button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      background-color: #d9b99c;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .register-container button:hover {
+      background-color: #b89979;
+    }
+
+    .register-container .extra-options {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .register-container .extra-options a {
+      color: #1d2d44;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .register-container .extra-options a:hover {
+      color: #a46628;
+    }
+
+    @media (max-width: 450px) {
+      .register-container {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h1>Hesap Oluştur</h1>
+    <form>
+      <input type="text" placeholder="Adınız Soyadınız" required />
+      <input type="email" placeholder="E-posta adresi" required />
+      <input type="password" placeholder="Şifre" required />
+      <button type="submit">Kayıt Ol</button>
+    </form>
+    <div class="extra-options">
+    <a href="/login">Zaten bir hesabım var.</a>
+    </div>
+  </div>
+</body>
+</html>
