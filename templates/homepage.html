@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>StudyVerse - Ana Sayfa</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+
+      body {
+        background: url("https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1470&q=80")
+          no-repeat center center fixed;
+        background-size: cover;
+        color: #2b2b2b;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(6px);
+        z-index: 0;
+      }
+
+      nav {
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: rgba(235, 227, 217, 0.85);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        margin: 1rem 2rem;
+      }
+
+      nav .logo {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #3e3e3e;
+        letter-spacing: 2px;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 1.2rem;
+      }
+
+      nav ul li a {
+        text-decoration: none;
+        color: #3e3e3e;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      nav ul li a:hover {
+        color: #6d4c41;
+      }
+
+      .main {
+        z-index: 1;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 3rem 2rem;
+      }
+
+      .todo-container {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        text-align: center;
+      }
+
+      .gradient-text {
+        background: linear-gradient(to right, #8d6e63, #a1887f);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .motto {
+        font-size: 1.1rem;
+        margin-bottom: 1.2rem;
+        color: #555;
+      }
+
+      .todo-form {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .todo-form input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+
+      .todo-form button {
+        padding: 0.75rem 1.5rem;
+        background-color: #6d4c41;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .todo-form button:hover {
+        background-color: #4e342e;
+      }
+
+      .todo-list {
+        list-style: none;
+        text-align: left;
+      }
+
+      .todo-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f9f6f2;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+      }
+
+      .todo-item span {
+        font-size: 1rem;
+        color: #333;
+      }
+
+      .todo-item button {
+        background-color: #e57373;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.4rem 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .todo-item button:hover {
+        background-color: #c62828;
+      }
+
+      footer {
+        z-index: 1;
+        text-align: center;
+        padding: 1rem 0;
+        background-color: rgba(235, 227, 217, 0.85);
+        color: #3e3e3e;
+        font-size: 0.95rem;
+        margin-top: auto;
+      }
+
+      @media (max-width: 600px) {
+        nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        nav ul {
+          flex-direction: column;
+          gap: 0.5rem;
+          margin-top: 0.5rem;
+        }
+
+        .todo-form {
+          flex-direction: column;
+        }
+
+        .todo-form button {
+          width: 100%;
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .pulse {
+        animation: pulse 2.5s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <div class="logo">StudyVerse</div>
+      <ul>
+        <li><a href="/notes">Notlarım</a></li>
+        <li><a href="/calendar">Takvim</a></li>
+        <li><a href="/todo">Görevlerim</a></li>
+        <li><a href="/timer">Kronometre</a></li>
+        <li><a href="/analysis">Analiz</a></li>
+        <li><a href="/logout">Çıkış Yap</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main">
+      <div class="todo-container">
+        <h2 class="gradient-text">Bugün neler yapacaksın?</h2>
+        <img
+          src="https://illustrations.popsy.co/gray/work-from-home.svg"
+          alt="İllüstrasyon"
+          style="width: 180px; margin: 0 auto 1.5rem; display: block"
+        />
+        <div class="todo-form">
+          <input type="text" placeholder="Yeni görev ekle..." />
+          <button class="pulse">Ekle</button>
+        </div>
+        <ul class="todo-list">
+          <li class="todo-item">
+            <span>Örnek görev: Go dersini tekrar et</span>
+            <button>Sil</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 StudyVerse – Verimli çalışmanın adresi</p>
+    </footer>
+  </body>
+</html>

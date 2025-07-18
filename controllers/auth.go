@@ -76,7 +76,6 @@ func LoginGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", nil)
 }
 
-// POST: Formdan gelen verilerle giriş yap
 func LoginPost(c *gin.Context) {
 	var input LoginInput
 
@@ -111,8 +110,11 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
-	// Başarılı giriş
-	c.HTML(http.StatusOK, "login.html", gin.H{
-		"success": "Giriş başarılı! Hoşgeldiniz, " + user.Username,
-	})
+	// Başarılı giriş - buradan sonrası
+	// Burada istersen session set edebilirsin (örneğin userID), sonra redirect yaparsın
+
+	// Örnek: c.SetCookie("user_id", user.ID, ... ) gibi session işlemi
+
+	// Şimdilik sadece redirect yapalım:
+	c.Redirect(http.StatusSeeOther, "/homepage")
 }

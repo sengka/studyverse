@@ -1,190 +1,211 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>StudyVerse - Hoş Geldin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Montserrat', sans-serif;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StudyVerse - Hoş Geldin</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", sans-serif;
+      }
 
-    body, html {
-      height: 100%;
-      width: 100%;
-    }
+      body,
+      html {
+        height: 100%;
+        width: 100%;
+      }
 
-    body {
-      color: #2b2b2b;
-      background: url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      min-height: 100vh;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(6px);
-      z-index: 0;
-    }
-
-    nav {
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background-color: rgba(235, 227, 217, 0.85); /* pastel bej */
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      border-radius: 12px;
-      margin: 1rem 2rem;
-    }
-
-    nav .logo {
-      font-weight: 700;
-      font-size: 1.8rem;
-      color: #3e3e3e;
-      letter-spacing: 2px;
-    }
-
-    nav .nav-buttons button {
-      margin-left: 1rem;
-      padding: 0.55rem 1.6rem;
-      font-weight: 600;
-      font-size: 1rem;
-      border: none;
-      border-radius: 28px;
-      background-color: #6d4c41; /* kahverengi */
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    nav .nav-buttons button:hover {
-      background-color: #4e342e;
-    }
-
-    main {
-      z-index: 1;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 4rem 2rem;
-      text-align: center;
-      max-width: 850px;
-      margin: 0 auto;
-      color: #3e3e3e;
-    }
-
-    main h1 {
-      font-size: 3.5rem;
-      margin-bottom: 0.5rem;
-      font-weight: 800;
-    }
-
-    main h2 {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-
-    main p {
-      font-size: 1.25rem;
-      line-height: 1.6;
-      max-width: 700px;
-      margin-bottom: 3rem;
-      color: #444;
-    }
-
-    main .explore-button {
-      padding: 1rem 3rem;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #fff;
-      background-color: #8d6e63; /* pastel kahverengi */
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 6px 20px rgba(141, 110, 99, 0.4);
-    }
-
-    main .explore-button:hover {
-      background-color: #6d4c41;
-    }
-
-    @media (max-width: 768px) {
-      nav {
+      body {
+        color: #2b2b2b;
+        background: url("https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1470&q=80")
+          no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
         flex-direction: column;
-        gap: 1rem;
+        position: relative;
+        min-height: 100vh;
       }
 
-      main h1 {
-        font-size: 2.8rem;
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(6px);
+        z-index: 0;
       }
 
-      main h2 {
-        font-size: 1.8rem;
-      }
-
-      main p {
-        font-size: 1.1rem;
-        padding: 0 1rem;
-      }
-    }
-
-    @media (max-width: 400px) {
       nav {
-        margin: 1rem;
-        padding: 1rem;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: rgba(235, 227, 217, 0.85); /* pastel bej */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        margin: 1rem 2rem;
+      }
+
+      nav .logo {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #3e3e3e;
+        letter-spacing: 2px;
       }
 
       nav .nav-buttons button {
-        width: 100%;
-        margin-left: 0;
+        margin-left: 1rem;
+        padding: 0.55rem 1.6rem;
+        font-weight: 600;
+        font-size: 1rem;
+        border: none;
+        border-radius: 28px;
+        background-color: #6d4c41; /* kahverengi */
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      nav .nav-buttons button:hover {
+        background-color: #4e342e;
       }
 
       main {
-        padding: 3rem 1rem;
+        z-index: 1;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 4rem 2rem;
+        text-align: center;
+        max-width: 850px;
+        margin: 0 auto;
+        color: #3e3e3e;
       }
 
       main h1 {
-        font-size: 2.2rem;
+        font-size: 3.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 800;
       }
 
       main h2 {
-        font-size: 1.4rem;
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
       }
-    }
-  </style>
-</head>
-<body>
 
-  <nav>
-    <div class="logo">StudyVerse</div>
-    <div class="nav-buttons">
-      <button onclick="location.href='/login'">Giriş</button>
-      <button onclick="location.href='/register'">Kayıt Ol</button>
-    </div>
-  </nav>
+      main p {
+        font-size: 1.25rem;
+        line-height: 1.6;
+        max-width: 700px;
+        margin-bottom: 3rem;
+        color: #444;
+      }
 
-  <main>
-    <h1>StudyVerse</h1>
-    <h2>Çalışmalarını Takip Et, Hedeflerine Ulaş!</h2>
-    <p>StudyVerse ile tüm öğrenme sürecini planla, alışkanlıklarını takip et ve ilerlemeyi gözlemle. Seninle birlikte büyüyen çalışma dünyanı keşfet!</p>
-    <button class="explore-button" onclick="location.href='/explore'">Keşfet</button>
-  </main>
+      main .explore-button {
+        padding: 1rem 3rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #fff;
+        background-color: #8d6e63; /* pastel kahverengi */
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 6px 20px rgba(141, 110, 99, 0.4);
+      }
 
-</body>
+      main .explore-button:hover {
+        background-color: #6d4c41;
+      }
+      footer {
+        z-index: 1;
+        text-align: center;
+        padding: 1rem 0;
+        background-color: rgba(235, 227, 217, 0.85);
+        color: #3e3e3e;
+        font-size: 0.95rem;
+        margin-top: auto;
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        main h1 {
+          font-size: 2.8rem;
+        }
+
+        main h2 {
+          font-size: 1.8rem;
+        }
+
+        main p {
+          font-size: 1.1rem;
+          padding: 0 1rem;
+        }
+      }
+
+      @media (max-width: 400px) {
+        nav {
+          margin: 1rem;
+          padding: 1rem;
+        }
+
+        nav .nav-buttons button {
+          width: 100%;
+          margin-left: 0;
+        }
+
+        main {
+          padding: 3rem 1rem;
+        }
+
+        main h1 {
+          font-size: 2.2rem;
+        }
+
+        main h2 {
+          font-size: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">StudyVerse</div>
+      <div class="nav-buttons">
+        <button onclick="location.href='/login'">Giriş</button>
+        <button onclick="location.href='/register'">Kayıt Ol</button>
+      </div>
+    </nav>
+
+    <main>
+      <h1>StudyVerse</h1>
+      <h2>Çalışmalarını Takip Et, Hedeflerine Ulaş!</h2>
+      <p>
+        StudyVerse ile tüm öğrenme sürecini planla, alışkanlıklarını takip et ve
+        ilerlemeyi gözlemle. Seninle birlikte büyüyen çalışma dünyanı keşfet!
+      </p>
+      <button class="explore-button" onclick="location.href='/explore'">
+        Keşfet
+      </button>
+    </main>
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 StudyVerse – Verimli çalışmanın adresi</p>
+    </footer>
+  </body>
 </html>

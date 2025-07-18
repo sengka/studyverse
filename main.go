@@ -38,9 +38,15 @@ func main() {
 		c.HTML(http.StatusOK, "explore.html", nil)
 	})
 
+	r.GET("/homepage", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "homepage.html", nil)
+	})
+
+	//kayıt
 	r.GET("/register", controllers.RegisterGet)
 	r.POST("/register", controllers.RegisterPost)
 
+	// giriş
 	r.GET("/login", controllers.LoginGet)
 	r.POST("/login", controllers.LoginPost)
 
