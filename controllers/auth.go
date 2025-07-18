@@ -136,5 +136,5 @@ func Logout(c *gin.Context) {
 	c.SetCookie("user_id", "", -1, "/", "localhost", false, true)
 
 	// Login sayfasına yönlendir
-	c.Redirect(http.StatusSeeOther, "/greeting")
+	c.Redirect(http.StatusSeeOther, "/")
 }
