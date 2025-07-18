@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>StudyVerse - Giriş Yap</title>
+    <title>StudyVerse - Kayıt Ol</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
       rel="stylesheet"
@@ -37,7 +37,7 @@
         z-index: 0;
       }
 
-      .login-container {
+      .register-container {
         position: relative;
         z-index: 1;
         background-color: rgba(255, 255, 255, 0.9);
@@ -49,14 +49,14 @@
         text-align: center;
       }
 
-      .login-container h1 {
+      .register-container h1 {
         margin-bottom: 1.5rem;
         font-size: 2rem;
         font-weight: 700;
         color: #1d2d44;
       }
 
-      .login-container input {
+      .register-container input {
         width: 100%;
         padding: 0.75rem;
         margin: 0.5rem 0;
@@ -65,7 +65,7 @@
         font-size: 1rem;
       }
 
-      .login-container button {
+      .register-container button {
         width: 100%;
         padding: 0.75rem;
         margin-top: 1rem;
@@ -79,22 +79,22 @@
         transition: background-color 0.3s ease;
       }
 
-      .login-container button:hover {
+      .register-container button:hover {
         background-color: #b89979;
       }
 
-      .login-container .extra-options {
+      .register-container .extra-options {
         margin-top: 1rem;
         font-size: 0.9rem;
       }
 
-      .login-container .extra-options a {
+      .register-container .extra-options a {
         color: #1d2d44;
         text-decoration: none;
         transition: color 0.3s ease;
       }
 
-      .login-container .extra-options a:hover {
+      .register-container .extra-options a:hover {
         color: #a46628;
       }
 
@@ -116,25 +116,31 @@
       }
 
       @media (max-width: 450px) {
-        .login-container {
+        .register-container {
           padding: 2rem 1.5rem;
         }
       }
     </style>
   </head>
   <body>
-    <div class="login-container">
-      <h1>Giriş Yap</h1>
+    <div class="register-container">
+      <h1>Hesap Oluştur</h1>
 
-      <form action="/login" method="POST">
+      <form action="/register" method="POST">
         <input
           type="text"
           name="username"
           placeholder="Kullanıcı Adı"
           required
         />
+        <input
+          type="email"
+          name="email"
+          placeholder="E-posta adresi"
+          required
+        />
         <input type="password" name="password" placeholder="Şifre" required />
-        <button type="submit">Giriş Yap</button>
+        <button type="submit">Kayıt Ol</button>
       </form>
 
       {{ if .success }}
@@ -144,7 +150,7 @@
       {{ end }}
 
       <div class="extra-options">
-        <a href="/register">Hesabınız yok mu? Kayıt olun.</a>
+        <a href="/login">Zaten bir hesabım var.</a>
       </div>
     </div>
   </body>

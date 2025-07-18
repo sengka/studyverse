@@ -38,6 +38,9 @@ func main() {
 	r.GET("/register", controllers.RegisterGet)
 	r.POST("/register", controllers.RegisterPost)
 
+	r.GET("/login", controllers.LoginGet)
+	r.POST("/login", controllers.LoginPost)
+
 	log.Println("Sunucu http://localhost:6060 adresinde başlatıldı. Ctrl+C ile durdurabilirsiniz.")
 
 	if err := r.Run(":6060"); err != nil {

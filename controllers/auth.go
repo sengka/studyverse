@@ -65,3 +65,54 @@ func RegisterPost(c *gin.Context) {
 		return
 	}
 }
+
+type LoginInput struct {
+	Email    string `form:"email" binding:"required,email"`
+	Password string `form:"password" binding:"required,min=6"`
+}
+
+// GET: Giriş sayfasını göster
+func LoginGet(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.html", nil)
+}
+
+// POST: Formdan gelen verilerle giriş yap
+func LoginPost(c *gin.Context) {
+	var input LoginInput
+
+	if err := c.ShouldBind(&input); err != nil {
+		c.HTML(http.StatusBadRequest, "login.html", gin.H{
+			"error": "Lütfen geçerli e-posta ve şifre girin.",
+		})
+		return
+	}
+
+	db, ok := c.MustGet("db").(*gorm.DB)
+	if !ok {
+		c.HTML(http.StatusInternalServerError, "login.html", gin.H{
+			"error": "Veritabanı bağlantısı kurulamadı.",
+		})
+		return
+	}
+
+	var user models.User
+	if err := db.Where("email = ?", input.Email).First(&user).Error; err != nil {
+		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
+			"error": "E-posta bulunamadı.",
+		})
+		return
+	}
+
+	// Şifre doğrulama
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
+		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
+			"error": "Şifre yanlış.",
+		})
+		return
+	}
+
+	// Başarılı giriş
+	c.HTML(http.StatusOK, "login.html", gin.H{
+		"success": "Giriş başarılı! Hoşgeldiniz, " + user.Username,
+	})
+}
