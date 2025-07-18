@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>StudyVerse - Keşfet</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      body {
+        background-color: #f2f4f8;
+        color: #1d2d44;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        flex: 1;
+        max-width: 1200px;
+        margin: auto;
+        padding: 3rem 2rem;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      header h1 {
+        font-size: 3rem;
+        color: #1d2d44;
+      }
+
+      .intro {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-bottom: 3rem;
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .feature-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-6px);
+      }
+
+      .feature-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: #1d2d44;
+      }
+
+      .feature-card p {
+        font-size: 1rem;
+        color: #444;
+      }
+
+      .cta {
+        text-align: center;
+        margin-top: 3rem;
+      }
+
+      .cta a {
+        display: inline-block;
+        background-color: #d9b99c;
+        color: white;
+        padding: 0.8rem 1.8rem;
+        font-size: 1rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+
+      .cta a:hover {
+        background-color: #b89979;
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem 0;
+        background-color: #1d2d44;
+        color: #fff;
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        margin-top: auto;
+      }
+
+      @media (max-width: 768px) {
+        header h1 {
+          font-size: 2.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>StudyVerse’e Hoş Geldin!</h1>
+      </header>
+
+      <div class="intro">
+        <p>
+          StudyVerse, kendi çalışma evrenini oluşturmanı sağlar. Görevlerini
+          planla, süre tut, ilerlemeni analiz et, öğrenmeni yönlendir!
+        </p>
+      </div>
+
+      <section class="features">
+        <div class="feature-card">
+          <h3>📅 Akıllı Takvim</h3>
+          <p>Günlük ve haftalık programlarını oluştur, düzenli çalış.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>✅ Görev Listesi</h3>
+          <p>Yapılacaklarını sırala, tamamladıkça başarıya yaklaş.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>🧠 Öğrenme Haritası</h3>
+          <p>Çalıştığın konuları etiketle, gelişimini haritalandır.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>📊 Çalışma Analizi</h3>
+          <p>Günlük ve haftalık sürelerini takip et, performansını ölç.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>⏱️ Kronometre</h3>
+          <p>Pomodoro veya klasik modda süre tut, odaklanmanı artır.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>🏆 İlerleme Rozetleri</h3>
+          <p>Hedeflerine ulaştıkça rozet kazan, motivasyonunu koru!</p>
+        </div>
+      </section>
+
+      <div class="cta">
+        <h2>Tüm bu özellikler ve daha fazlasına erişmek için!</h2>
+        <a href="/register">Hemen Katıl</a>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 StudyVerse. Odaklan, ilerle, başarıyı keşfet!</p>
+    </footer>
+  </body>
+</html>

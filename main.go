@@ -34,6 +34,9 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "greeting.html", nil)
 	})
+	r.GET("/explore", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "explore.html", nil)
+	})
 
 	r.GET("/register", controllers.RegisterGet)
 	r.POST("/register", controllers.RegisterPost)
