@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"studyverse/models"
 
 	"github.com/gin-gonic/gin"
@@ -110,11 +111,30 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
-	// Başarılı giriş - buradan sonrası
-	// Burada istersen session set edebilirsin (örneğin userID), sonra redirect yaparsın
+	c.SetCookie("user_id", strconv.Itoa(int(user.ID)), 3600, "/", "localhost", false, true)
 
-	// Örnek: c.SetCookie("user_id", user.ID, ... ) gibi session işlemi
-
-	// Şimdilik sadece redirect yapalım:
 	c.Redirect(http.StatusSeeOther, "/homepage")
+}
+
+func AuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userID, err := c.Cookie("user_id")
+		if err != nil || userID == "" {
+			// Cookie yoksa ya da boşsa kullanıcıyı login sayfasına gönder
+			c.Redirect(http.StatusFound, "/login")
+			c.Abort()
+			return
+		}
+
+		// Cookie varsa devam et
+		c.Next()
+	}
+}
+
+func Logout(c *gin.Context) {
+	// user_id çerezini sil
+	c.SetCookie("user_id", "", -1, "/", "localhost", false, true)
+
+	// Login sayfasına yönlendir
+	c.Redirect(http.StatusSeeOther, "/greeting")
 }
