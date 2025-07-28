@@ -2,14 +2,11 @@ package main
 
 import (
 	"log"
-	"studyverse/controllers"
 	"studyverse/models"
 	"studyverse/routes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -18,29 +15,20 @@ func main() {
 		log.Fatal(".env dosyası yüklenemedi")
 	}
 
-	db, err := gorm.Open(sqlite.Open("studyverse.db"), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Veritabanına bağlanılamadı:", err)
-	}
-
-	// Gerekli tabloları oluştur
-	db.AutoMigrate(&models.User{}, &models.Task{}, &models.ResetToken{})
+	// Veritabanını başlat (models.DB set edilir ve AutoMigrate burada yapılır)
+	models.InitDB()
 
 	r := gin.Default()
 
-	// Veritabanını context'e ekle
+	// Global models.DB'yi context'e ekle
 	r.Use(func(c *gin.Context) {
-		c.Set("db", db)
+		c.Set("db", models.DB)
 		c.Next()
 	})
 
 	r.LoadHTMLGlob("templates/*")
 
 	routes.SetupRoutes(r)
-
-	authGroup := r.Group("/")
-	authGroup.Use(controllers.AuthMiddleware())
-	routes.RegisterTaskRoutes(authGroup)
 
 	log.Println("Sunucu başlatıldı: http://localhost:6060")
 	if err := r.Run(":6060"); err != nil {

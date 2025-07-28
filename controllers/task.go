@@ -3,87 +3,145 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"time"
+
 	"studyverse/models"
 
 	"github.com/gin-gonic/gin"
 )
 
-func CalendarPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "calendar.html", nil)
-}
-
-func GetTasks(c *gin.Context) {
-	date := c.Query("date")
-	userIDStr, _ := c.Cookie("user_id")
-	userID, _ := strconv.Atoi(userIDStr)
-
-	var tasks []models.Task
-	models.DB.Where("date = ? AND user_id = ?", date, userID).Find(&tasks)
-	c.JSON(http.StatusOK, tasks)
-}
-
-func CreateTask(c *gin.Context) {
-	var input struct {
-		Date    string `json:"date"`
-		Content string `json:"content"`
+func getUserIDFromContext(c *gin.Context) (uint, bool) {
+	userIDStr, err := c.Cookie("user_id")
+	if err != nil || userIDStr == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Kullanıcı ID'si bulunamadı"})
+		return 0, false
 	}
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Veri hatalı"})
+
+	userID64, err := strconv.ParseUint(userIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Geçersiz kullanıcı ID'si"})
+		return 0, false
+	}
+	return uint(userID64), true
+}
+
+// GET /tasks?date=yyyy-mm-dd
+func GetTasks(c *gin.Context) {
+	userID, ok := getUserIDFromContext(c)
+	if !ok {
 		return
 	}
 
-	userIDStr, _ := c.Cookie("user_id")
-	userID, _ := strconv.Atoi(userIDStr)
+	date := c.Query("date")
+	if date == "" {
+		date = time.Now().Format("2006-01-02")
+	}
+
+	tasks, err := models.GetTasksByUserAndDate(models.DB, userID, date)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Görevler alınamadı"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"tasks": tasks})
+}
+
+// POST /tasks
+func CreateTask(c *gin.Context) {
+	userID, ok := getUserIDFromContext(c)
+	if !ok {
+		return
+	}
+
+	var input struct {
+		Date    string `json:"date" binding:"required"`
+		Content string `json:"content" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Geçersiz veri"})
+		return
+	}
 
 	task := models.Task{
 		Date:    input.Date,
 		Content: input.Content,
-		UserID:  uint(userID),
 		Done:    false,
+		UserID:  userID,
 	}
-	models.DB.Create(&task)
-	c.JSON(http.StatusOK, task)
+
+	if err := models.CreateTask(models.DB, &task); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Görev oluşturulamadı"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"task": task})
 }
 
-func DeleteTask(c *gin.Context) {
-	id := c.Param("id")
-	models.DB.Delete(&models.Task{}, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Silindi"})
-}
-
+// PUT /tasks/:id
 func UpdateTask(c *gin.Context) {
-	id := c.Param("id")
+	userID, ok := getUserIDFromContext(c)
+	if !ok {
+		return
+	}
+
+	taskID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Geçersiz görev ID'si"})
+		return
+	}
 
 	var input struct {
-		Content string `json:"content"`
+		Content *string `json:"content"`
+		Done    *bool   `json:"done"`
 	}
+
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Veri hatalı"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Geçersiz veri"})
 		return
 	}
 
+	// Görevi çek
 	var task models.Task
-	if err := models.DB.First(&task, id).Error; err != nil {
+	err = models.DB.Where("id = ? AND user_id = ?", uint(taskID), userID).First(&task).Error
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Görev bulunamadı"})
 		return
 	}
 
-	task.Content = input.Content
-	models.DB.Save(&task)
+	if input.Content != nil {
+		task.Content = *input.Content
+	}
+	if input.Done != nil {
+		task.Done = *input.Done
+	}
 
-	c.JSON(http.StatusOK, task)
+	if err := models.UpdateTask(models.DB, &task); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Görev güncellenemedi"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"task": task})
 }
 
-func ToggleDone(c *gin.Context) {
-	id := c.Param("id")
-	var task models.Task
-	if err := models.DB.First(&task, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Görev bulunamadı"})
+// DELETE /tasks/:id
+func DeleteTask(c *gin.Context) {
+	userID, ok := getUserIDFromContext(c)
+	if !ok {
 		return
 	}
 
-	task.Done = !task.Done
-	models.DB.Save(&task)
+	taskID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Geçersiz görev ID'si"})
+		return
+	}
 
-	c.JSON(http.StatusOK, task)
+	err = models.DeleteTask(models.DB, uint(taskID), userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Görev silinemedi"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Görev silindi"})
 }

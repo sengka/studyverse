@@ -35,7 +35,7 @@ func SetupRoutes(r *gin.Engine) {
 	r.GET("/changepassword", controllers.NewPasswordGet)
 	r.POST("/changepassword", controllers.NewPasswordPost)
 
-	// Giriş gerektiren (korumalı) sayfalar
+	// Giriş gerektiren (korumalı) sayfalar için grup
 	auth := r.Group("/")
 	auth.Use(controllers.AuthMiddleware())
 
@@ -56,14 +56,18 @@ func SetupRoutes(r *gin.Engine) {
 	})
 
 	auth.GET("/logout", controllers.Logout)
-	auth.GET("/calendar", controllers.CalendarPage)
-}
 
-func RegisterTaskRoutes(rg *gin.RouterGroup) {
-	tasks := rg.Group("/api/tasks")
-	tasks.GET("", controllers.GetTasks)
-	tasks.POST("", controllers.CreateTask)
-	tasks.DELETE("/:id", controllers.DeleteTask)
-	tasks.PUT("/:id", controllers.UpdateTask)
-	tasks.PATCH("/:id/done", controllers.ToggleDone)
+	// Burada değişiklik: /calendar artık HTML sayfası dönecek
+	auth.GET("/calendar", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "calendar.html", nil) // calendar.html templates klasöründe olmalı
+	})
+
+	// API rotaları için alt grup (prefix: /api/tasks)
+	taskGroup := auth.Group("/api/tasks")
+	// Burada tekrar AuthMiddleware gerek yok, çünkü auth zaten kullanılıyor
+
+	taskGroup.GET("", controllers.GetTasks)          // GET /api/tasks?date=yyyy-mm-dd
+	taskGroup.POST("", controllers.CreateTask)       // POST /api/tasks
+	taskGroup.PUT("/:id", controllers.UpdateTask)    // PUT /api/tasks/:id
+	taskGroup.DELETE("/:id", controllers.DeleteTask) // DELETE /api/tasks/:id
 }

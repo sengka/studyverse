@@ -127,6 +127,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Cookie varsa devam et
+		c.Set("user_id", userID)
 		c.Next()
 	}
 }
