@@ -2,10 +2,9 @@ package main
 
 import (
 	"log"
-	"net/http"
-	"strconv"
 	"studyverse/controllers"
 	"studyverse/models"
+	"studyverse/routes"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
@@ -13,69 +12,40 @@ import (
 )
 
 func main() {
-	// Veritabanı bağlan ve migrate et
+	// Veritabanı bağlantısı ve migrate
 	db, err := gorm.Open(sqlite.Open("studyverse.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Veritabanına bağlanılamadı:", err)
 	}
-	db.AutoMigrate(&models.User{})
+
+	// Gerekli tabloları oluştur
+	db.AutoMigrate(&models.User{}, &models.Task{})
+
+	// Eğer models.InitDB fonksiyonun veritabanını başlatmak içinse,
+	// onu burada db ile parametre olarak çağırmalısın:
+	models.InitDB()
 
 	r := gin.Default()
 
-	// HTML şablonlarını yükle
-	r.LoadHTMLGlob("templates/*")
-
-	// Veritabanını context'e ekle
+	// Veritabanını context'e ekle (her request'te erişilebilir olsun diye)
 	r.Use(func(c *gin.Context) {
 		c.Set("db", db)
 		c.Next()
 	})
 
-	// Giriş yapılması gerekmeyen sayfalar
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "greeting.html", nil)
-	})
-	r.GET("/explore", func(c *gin.Context) { // <-- Artık burada, korumasız
-		c.HTML(http.StatusOK, "explore.html", nil)
-	})
-	r.GET("/login", controllers.LoginGet)
-	r.POST("/login", controllers.LoginPost)
-	r.GET("/register", controllers.RegisterGet)
-	r.POST("/register", controllers.RegisterPost)
+	// HTML şablonlarını yükle
+	r.LoadHTMLGlob("templates/*")
 
-	// Giriş yapılması gereken (korumalı) sayfalar
-	authRoutes := r.Group("/")
-	authRoutes.Use(controllers.AuthMiddleware())
-	{
-		authRoutes.GET("/homepage", func(c *gin.Context) {
-			db, _ := c.MustGet("db").(*gorm.DB)
+	// Tüm route'ları burada organize et
+	routes.SetupRoutes(r)
 
-			// Cookie'den user_id'yi al
-			userID, err := c.Cookie("user_id")
-			if err != nil {
-				c.Redirect(http.StatusFound, "/login")
-				return
-			}
+	// Task ile ilgili route'ları auth middleware ile koru
+	authGroup := r.Group("/")
+	authGroup.Use(controllers.AuthMiddleware())
+	routes.RegisterTaskRoutes(authGroup)
 
-			// user_id string, onu uint'a çevir
-			uid64, _ := strconv.ParseUint(userID, 10, 32)
-			var user models.User
-			if err := db.First(&user, uint(uid64)).Error; err != nil {
-				c.Redirect(http.StatusFound, "/login")
-				return
-			}
-
-			// HTML'e user bilgisini gönder
-			c.HTML(http.StatusOK, "homepage.html", gin.H{
-				"Username": user.Username, // Veritabanındaki kullanıcı adı
-			})
-		})
-		r.GET("/logout", controllers.Logout)
-
-	}
-
-	log.Println("Sunucu http://localhost:6060 adresinde başlatıldı. Ctrl+C ile durdurabilirsiniz.")
-
+	// Sunucuyu başlat
+	log.Println("Sunucu başlatıldı: http://localhost:6060")
 	if err := r.Run(":6060"); err != nil {
 		log.Fatal("Sunucu başlatılamadı:", err)
 	}
