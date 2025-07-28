@@ -13,21 +13,29 @@ import (
 func SetupRoutes(r *gin.Engine) {
 	r.LoadHTMLGlob("templates/*")
 
+	// Genel Sayfalar
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "greeting.html", nil)
 	})
 	r.GET("/explore", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "explore.html", nil)
 	})
-	r.GET("/forgotpassword", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "forgotpassword.html", nil)
-	})
+
+	// Auth Sayfaları
 	r.GET("/login", controllers.LoginGet)
 	r.POST("/login", controllers.LoginPost)
 	r.GET("/register", controllers.RegisterGet)
 	r.POST("/register", controllers.RegisterPost)
 
-	// Korunan rotalar
+	// Şifremi unuttum
+	r.GET("/forgotpassword", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "forgotpassword.html", nil)
+	})
+	r.POST("/forgotpassword", controllers.ForgotPasswordPost)
+	r.GET("/changepassword", controllers.NewPasswordGet)
+	r.POST("/changepassword", controllers.NewPasswordPost)
+
+	// Giriş gerektiren (korumalı) sayfalar
 	auth := r.Group("/")
 	auth.Use(controllers.AuthMiddleware())
 
@@ -46,9 +54,9 @@ func SetupRoutes(r *gin.Engine) {
 			"Username": user.Username,
 		})
 	})
+
 	auth.GET("/logout", controllers.Logout)
 	auth.GET("/calendar", controllers.CalendarPage)
-
 }
 
 func RegisterTaskRoutes(rg *gin.RouterGroup) {

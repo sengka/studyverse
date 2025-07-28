@@ -7,44 +7,41 @@ import (
 	"studyverse/routes"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func main() {
-	// Veritabanı bağlantısı ve migrate
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(".env dosyası yüklenemedi")
+	}
+
 	db, err := gorm.Open(sqlite.Open("studyverse.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Veritabanına bağlanılamadı:", err)
 	}
 
 	// Gerekli tabloları oluştur
-	db.AutoMigrate(&models.User{}, &models.Task{})
-
-	// Eğer models.InitDB fonksiyonun veritabanını başlatmak içinse,
-	// onu burada db ile parametre olarak çağırmalısın:
-	models.InitDB()
+	db.AutoMigrate(&models.User{}, &models.Task{}, &models.ResetToken{})
 
 	r := gin.Default()
 
-	// Veritabanını context'e ekle (her request'te erişilebilir olsun diye)
+	// Veritabanını context'e ekle
 	r.Use(func(c *gin.Context) {
 		c.Set("db", db)
 		c.Next()
 	})
 
-	// HTML şablonlarını yükle
 	r.LoadHTMLGlob("templates/*")
 
-	// Tüm route'ları burada organize et
 	routes.SetupRoutes(r)
 
-	// Task ile ilgili route'ları auth middleware ile koru
 	authGroup := r.Group("/")
 	authGroup.Use(controllers.AuthMiddleware())
 	routes.RegisterTaskRoutes(authGroup)
 
-	// Sunucuyu başlat
 	log.Println("Sunucu başlatıldı: http://localhost:6060")
 	if err := r.Run(":6060"); err != nil {
 		log.Fatal("Sunucu başlatılamadı:", err)
