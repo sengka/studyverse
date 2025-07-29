@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>StudyVerse - Notlarım</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #fff5e0 0%, #f9e8d9 100%);
+        color: #3e3e3e;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      nav {
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: rgba(235, 227, 217, 0.95);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        margin: 1rem 2rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .logo {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #3e3e3e;
+        letter-spacing: 2px;
+      }
+
+      .welcome-message {
+        font-size: 1rem;
+        color: #3e3e3e;
+        font-weight: 600;
+        margin-top: 0.25rem;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1.2rem;
+      }
+
+      .nav-links li a {
+        text-decoration: none;
+        color: #3e3e3e;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links li a:hover {
+        color: #6d4c41;
+      }
+
+      main {
+        flex: 1;
+        margin: 1rem 2rem 2rem 2rem;
+        display: flex;
+        justify-content: center;
+      }
+
+      .notes-container {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        padding: 2rem;
+        width: 100%;
+        max-width: 900px;
+        position: relative;
+      }
+
+      .gradient-text {
+        background: linear-gradient(to right, #8d6e63, #a1887f);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .motto {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: #555;
+        text-align: center;
+      }
+
+      .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+      }
+
+      .add-folder-btn,
+      .add-note-btn {
+        padding: 0.75rem 1.5rem;
+        background-color: #6d4c41;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .add-folder-btn:hover,
+      .add-note-btn:hover {
+        background-color: #4e342e;
+      }
+
+      .folder-list {
+        list-style: none;
+        padding-left: 1rem;
+      }
+
+      .folder-item {
+        margin-bottom: 0.5rem;
+      }
+
+      .folder-header {
+        background: #f9f6f2;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .folder-header:hover {
+        background-color: #ece2d9;
+      }
+
+      .folder-title {
+        font-weight: 600;
+        color: #333;
+      }
+
+      .folder-actions button {
+        background-color: #e57373;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.3rem 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 0.5rem;
+      }
+
+      .folder-actions button:hover {
+        background-color: #c62828;
+      }
+
+      .folder-actions .edit-btn {
+        background-color: #6d4c41;
+      }
+
+      .folder-actions .edit-btn:hover {
+        background-color: #4e342e;
+      }
+
+      .note-list {
+        list-style: none;
+        padding-left: 2rem;
+        display: none;
+      }
+
+      .note-item {
+        background: #f9f6f2;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .note-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .note-content {
+        flex: 1;
+        user-select: text;
+        word-wrap: break-word;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .note-actions button {
+        background-color: #e57373;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.3rem 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 0.5rem;
+      }
+
+      .note-actions button:hover {
+        background-color: #c62828;
+      }
+
+      .note-actions .edit-btn {
+        background-color: #6d4c41;
+      }
+
+      .note-actions .edit-btn:hover {
+        background-color: #4e342e;
+      }
+
+      .no-folder-notes {
+        list-style: none;
+        padding-left: 1rem;
+        margin-top: 1rem;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 3;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #3e3e3e;
+      }
+
+      .note-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .note-form input,
+      .note-form textarea {
+        padding: 0.75rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+
+      .note-form textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .note-form button {
+        padding: 0.75rem;
+        background-color: #6d4c41;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .note-form button:hover {
+        background-color: #4e342e;
+      }
+
+      .close-btn {
+        background-color: #e57373;
+      }
+
+      .close-btn:hover {
+        background-color: #c62828;
+      }
+
+      footer {
+        z-index: 1;
+        text-align: center;
+        padding: 1rem 0;
+        background: rgba(235, 227, 217, 0.95);
+        color: #3e3e3e;
+        font-size: 0.95rem;
+        margin-top: auto;
+      }
+
+      @media (max-width: 600px) {
+        nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .nav-links {
+          flex-direction: column;
+          gap: 0.5rem;
+          margin-top: 0.5rem;
+        }
+
+        .notes-container {
+          padding: 1rem;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .modal-content {
+          width: 95%;
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-left">
+        <div class="logo">StudyVerse</div>
+        <h2 class="welcome-message">İyi çalışmalar, {{ .Username }}!</h2>
+      </div>
+      <ul class="nav-links">
+        <li><a href="/homepage">Ana Sayfa</a></li>
+        <li><a href="/notes">Notlarım</a></li>
+        <li><a href="/calendar">Görevlerim</a></li>
+        <li><a href="/todo">Takvim</a></li>
+        <li><a href="/timer">Kronometre</a></li>
+        <li><a href="/analysis">Analiz</a></li>
+        <li><a href="/logout">Çıkış Yap</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="notes-container">
+        <div class="gradient-text">Notlarım</div>
+        <div class="motto">Notlarını düzenle ve organize et!</div>
+        <div class="action-buttons">
+          <button class="add-folder-btn" onclick="openModal('folder')">
+            Klasör Ekle
+          </button>
+          <button class="add-note-btn" onclick="openModal('note')">
+            Not Ekle
+          </button>
+        </div>
+        <ul id="folderList" class="folder-list"></ul>
+        <ul id="noFolderNotes" class="no-folder-notes"></ul>
+      </section>
+    </main>
+
+    <div id="noteModal" class="modal">
+      <div class="modal-content">
+        <h2 id="modalTitle">Klasör/Not Ekle</h2>
+        <form id="noteForm" class="note-form" autocomplete="off">
+          <input
+            type="text"
+            id="folderName"
+            placeholder="Klasör adı..."
+            style="display: none"
+          />
+          <textarea
+            id="noteContent"
+            placeholder="Notunu buraya yaz..."
+            style="display: none"
+          ></textarea>
+          <select
+            id="folderSelect"
+            style="
+              display: none;
+              padding: 0.75rem 1rem;
+              border: 1px solid #ccc;
+              border-radius: 8px;
+              font-size: 1rem;
+            "
+          >
+            <option value="">Klasörsüz</option>
+          </select>
+          <button type="submit">Kaydet</button>
+          <button type="button" class="close-btn" onclick="closeModal()">
+            Kapat
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 StudyVerse – Verimli çalışmanın adresi</p>
+    </footer>
+
+    <script>
+      // DOM Elemanları
+      const modal = document.getElementById("noteModal");
+      const noteForm = document.getElementById("noteForm");
+      const folderList = document.getElementById("folderList");
+      const noFolderNotes = document.getElementById("noFolderNotes");
+      let editingId = null;
+      let isFolder = false;
+
+      // Modal Kontrolleri
+      function openModal(
+        type = "note",
+        id = null,
+        content = "",
+        folderId = ""
+      ) {
+        isFolder = type === "folder";
+        editingId = id;
+        const modalTitle = document.getElementById("modalTitle");
+        const folderName = document.getElementById("folderName");
+        const noteContent = document.getElementById("noteContent");
+        const folderSelect = document.getElementById("folderSelect");
+
+        modalTitle.textContent = `${id ? "Düzenle" : "Ekle"} ${
+          isFolder ? "Klasör" : "Not"
+        }`;
+        folderName.style.display = isFolder ? "block" : "none";
+        noteContent.style.display = isFolder ? "none" : "block";
+        folderSelect.style.display = isFolder ? "none" : "block";
+        folderName.value = content || "";
+        noteContent.value = content || "";
+
+        if (!isFolder) {
+          folderSelect.innerHTML = '<option value="">Klasörsüz</option>';
+          loadFolders().then((folders) => {
+            folders.forEach((folder) => {
+              const option = document.createElement("option");
+              option.value = folder.id;
+              option.textContent = folder.name;
+              if (folderId === folder.id) option.selected = true;
+              folderSelect.appendChild(option);
+            });
+          });
+        }
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        modal.style.display = "none";
+        noteForm.reset();
+        editingId = null;
+        isFolder = false;
+      }
+
+      // Klasör ve Notları Yükleme
+      async function loadFolders() {
+        try {
+          const response = await fetch("http://localhost:6060/api/notes", {
+            credentials: "include",
+          });
+          if (!response.ok)
+            throw new Error(`Veriler yüklenemedi: ${response.status}`);
+          const data = await response.json();
+          renderFoldersAndNotes(data.folders || [], data.notes || []);
+          return data.folders || [];
+        } catch (err) {
+          console.error("Veriler yüklenemedi:", err);
+          folderList.innerHTML = `<li style="color:red; padding:10px;">Veriler yüklenirken hata oluştu: ${err.message}</li>`;
+          return [];
+        }
+      }
+
+      // Klasör ve Notları Render Etme
+      function renderFoldersAndNotes(folders, notes) {
+        folderList.innerHTML = "";
+        const noFolderNotesList = [];
+
+        notes.forEach((note) => {
+          if (!note.folder_id) noFolderNotesList.push(note);
+        });
+
+        if (noFolderNotesList.length > 0) {
+          renderNotes(noFolderNotes, noFolderNotesList, null);
+        } else {
+          noFolderNotes.innerHTML =
+            '<li style="color:#777; padding:10px;">Klasörsüz not yok.</li>';
+        }
+
+        if (folders.length === 0) {
+          folderList.innerHTML =
+            '<li style="color:#777; padding:10px;">Henüz klasör yok.</li>';
+          return;
+        }
+
+        folders.forEach((folder) => {
+          const li = document.createElement("li");
+          li.classList.add("folder-item");
+          const header = document.createElement("div");
+          header.classList.add("folder-header");
+          const title = document.createElement("span");
+          title.classList.add("folder-title");
+          title.textContent = folder.name;
+          const actions = document.createElement("div");
+          actions.classList.add("folder-actions");
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Düzenle";
+          editBtn.classList.add("edit-btn");
+          editBtn.addEventListener("click", () =>
+            openModal("folder", folder.id, folder.name)
+          );
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Sil";
+          deleteBtn.addEventListener("click", () =>
+            deleteItem("folder", folder.id)
+          );
+          actions.appendChild(editBtn);
+          actions.appendChild(deleteBtn);
+          header.appendChild(title);
+          header.appendChild(actions);
+          header.addEventListener("click", () => toggleFolder(li, folder.id));
+          li.appendChild(header);
+          const noteList = document.createElement("ul");
+          noteList.classList.add("note-list");
+          noteList.id = `notes-${folder.id}`;
+          const folderNotes = notes.filter((n) => n.folder_id === folder.id);
+          renderNotes(noteList, folderNotes, folder.id);
+          li.appendChild(noteList);
+          folderList.appendChild(li);
+        });
+      }
+
+      function renderNotes(noteList, notes, folderId) {
+        noteList.innerHTML = "";
+        if (!notes || notes.length === 0) {
+          noteList.innerHTML = `<li style="color:#777; padding-left:1rem;">${
+            folderId ? "Bu klasörde" : "Klasörsüz"
+          } not yok.</li>`;
+          return;
+        }
+        notes.forEach((note) => {
+          const li = document.createElement("li");
+          li.classList.add("note-item");
+          const content = document.createElement("div");
+          content.classList.add("note-content");
+          content.textContent = note.content;
+          const actions = document.createElement("div");
+          actions.classList.add("note-actions");
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Düzenle";
+          editBtn.classList.add("edit-btn");
+          editBtn.addEventListener("click", () =>
+            openModal("note", note.id, note.content, note.folder_id)
+          );
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Sil";
+          deleteBtn.addEventListener("click", () =>
+            deleteItem("note", note.id)
+          );
+          actions.appendChild(editBtn);
+          actions.appendChild(deleteBtn);
+          li.appendChild(content);
+          li.appendChild(actions);
+          noteList.appendChild(li);
+        });
+      }
+
+      function toggleFolder(folderElement, folderId) {
+        const noteList = folderElement.querySelector(`#notes-${folderId}`);
+        noteList.style.display =
+          noteList.style.display === "block" ? "none" : "block";
+      }
+
+      async function saveItem() {
+        const content = isFolder
+          ? document.getElementById("folderName").value.trim()
+          : document.getElementById("noteContent").value.trim();
+        if (!content) {
+          alert("Lütfen bir isim veya not girin.");
+          return;
+        }
+        try {
+          const url = editingId
+            ? isFolder
+              ? `http://localhost:6060/api/notes/folders/${editingId}`
+              : `http://localhost:6060/api/notes/${editingId}`
+            : isFolder
+            ? "http://localhost:6060/api/notes/folders"
+            : "http://localhost:6060/api/notes";
+          const method = editingId ? "PUT" : "POST";
+          const folderSelectValue =
+            document.getElementById("folderSelect").value;
+          const folderId = folderSelectValue
+            ? parseInt(folderSelectValue, 10)
+            : null; // String'i integer'a çevir, yoksa null
+          const body = isFolder
+            ? { name: content }
+            : {
+                content,
+                folder_id: folderId === null ? null : folderId, // null ise null, yoksa integer
+              };
+          const response = await fetch(url, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(body),
+          });
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `${isFolder ? "Klasör" : "Not"} ${
+                editingId ? "düzenlenemedi" : "eklenemedi"
+              }: ${response.status}, ${JSON.stringify(errorData)}`
+            );
+          }
+          closeModal();
+          loadFolders();
+        } catch (err) {
+          console.error("Hata:", err);
+          alert(
+            `${isFolder ? "Klasör" : "Not"} ${
+              editingId ? "düzenlenirken" : "eklenirken"
+            } hata oluştu: ${err.message}`
+          );
+        }
+      }
+
+      // Silme
+      async function deleteItem(type, id) {
+        if (
+          !confirm(
+            `${
+              type === "folder" ? "Klasör" : "Not"
+            } silmek istediğinizden emin misiniz?`
+          )
+        )
+          return;
+        try {
+          const url = `${
+            type === "folder"
+              ? "http://localhost:6060/api/notes/folders"
+              : "http://localhost:6060/api/notes"
+          }/${id}`;
+          const response = await fetch(url, {
+            method: "DELETE",
+            credentials: "include",
+          });
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `${type === "folder" ? "Klasör" : "Not"} silinemedi: ${
+                response.status
+              }, ${JSON.stringify(errorData)}`
+            );
+          }
+          loadFolders();
+        } catch (err) {
+          console.error("Hata:", err);
+          alert(
+            `${type === "folder" ? "Klasör" : "Not"} silinirken hata oluştu: ${
+              err.message
+            }`
+          );
+        }
+      }
+
+      // Form İşleme
+      noteForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        saveItem();
+      });
+
+      // Sayfa Yükleme
+      window.addEventListener("DOMContentLoaded", loadFolders);
+    </script>
+  </body>
+</html>

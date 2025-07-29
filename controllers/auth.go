@@ -111,7 +111,7 @@ func LoginPost(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("user_id", strconv.Itoa(int(user.ID)), 3600, "/", "localhost", false, true)
+	c.SetCookie("user_id", strconv.Itoa(int(user.ID)), 3600, "/", "", false, true)
 
 	c.Redirect(http.StatusSeeOther, "/homepage")
 }

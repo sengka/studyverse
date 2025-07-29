@@ -27,7 +27,7 @@ func InitDB() {
 	sqlDB.SetMaxIdleConns(5)
 
 	// Modelleri migre et
-	err = database.AutoMigrate(&User{}, &Task{}, &ResetToken{}, &Timelog{}, &Event{})
+	err = database.AutoMigrate(&User{}, &Task{}, &ResetToken{}, &Timelog{}, &Event{}, &Folder{}, &Note{})
 	if err != nil {
 		log.Fatalf("Tablolar migre edilemedi: %v", err)
 	}
