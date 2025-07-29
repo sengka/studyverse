@@ -102,4 +102,23 @@ func SetupRoutes(r *gin.Engine) {
 	r.POST("/api/timelogs", controllers.SaveTimelog)
 	r.GET("/api/timelogs", controllers.GetTimelogs)
 
+	r.POST("/api/events", controllers.SaveEvent)
+	r.GET("/api/events", controllers.GetEvents)
+	r.DELETE("/api/events/:id", controllers.DeleteEvent)
+	auth.GET("/todo", func(c *gin.Context) {
+		db, _ := c.MustGet("db").(*gorm.DB)
+		userID, _ := c.Cookie("user_id")
+		uid64, _ := strconv.ParseUint(userID, 10, 32)
+
+		var user models.User
+		if err := db.First(&user, uint(uid64)).Error; err != nil {
+			c.Redirect(http.StatusFound, "/login")
+			return
+		}
+
+		c.HTML(http.StatusOK, "todo.html", gin.H{
+			"Username": user.Username,
+		})
+	})
+
 }

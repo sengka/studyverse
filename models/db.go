@@ -12,7 +12,7 @@ var DB *gorm.DB
 func InitDB() {
 	database, err := gorm.Open(sqlite.Open("studyverse.db"), &gorm.Config{
 		// GORM ayarları
-		DisableForeignKeyConstraintWhenMigrating: true, // SQLite için yabancı anahtar kısıtlamalarını devre dışı bırak
+		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {
 		log.Fatalf("Veritabanına bağlanılamadı: %v", err)
@@ -23,11 +23,11 @@ func InitDB() {
 	if err != nil {
 		log.Fatalf("Veritabanı bağlantı havuzu alınamadı: %v", err)
 	}
-	sqlDB.SetMaxOpenConns(10) // Maksimum açık bağlantı
-	sqlDB.SetMaxIdleConns(5)  // Maksimum boşta bağlantı
+	sqlDB.SetMaxOpenConns(10)
+	sqlDB.SetMaxIdleConns(5)
 
 	// Modelleri migre et
-	err = database.AutoMigrate(&User{}, &Task{}, &ResetToken{}, &Timelog{})
+	err = database.AutoMigrate(&User{}, &Task{}, &ResetToken{}, &Timelog{}, &Event{})
 	if err != nil {
 		log.Fatalf("Tablolar migre edilemedi: %v", err)
 	}
