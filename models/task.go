@@ -5,11 +5,15 @@ import (
 )
 
 type Task struct {
-	gorm.Model
-	Date    string `json:"date"`
-	Content string `json:"content"`
-	Done    bool   `json:"done"`
-	UserID  uint   `json:"user_id"`
+	Username  string         `json:"username"`
+	ID        uint           `json:"id" gorm:"primaryKey"`
+	CreatedAt string         `json:"created_at"`
+	UpdatedAt string         `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
+	Date      string         `json:"date"`
+	Content   string         `json:"content"`
+	Done      bool           `json:"done"`
+	UserID    uint           `json:"user_id"`
 }
 
 // CreateTask yeni bir task oluşturur

@@ -59,7 +59,19 @@ func SetupRoutes(r *gin.Engine) {
 
 	// Burada değişiklik: /calendar artık HTML sayfası dönecek
 	auth.GET("/calendar", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "calendar.html", nil) // calendar.html templates klasöründe olmalı
+		db, _ := c.MustGet("db").(*gorm.DB)
+		userID, _ := c.Cookie("user_id")
+		uid64, _ := strconv.ParseUint(userID, 10, 32)
+
+		var user models.User
+		if err := db.First(&user, uint(uid64)).Error; err != nil {
+			c.Redirect(http.StatusFound, "/login")
+			return
+		}
+
+		c.HTML(http.StatusOK, "calendar.html", gin.H{
+			"Username": user.Username,
+		})
 	})
 
 	// API rotaları için alt grup (prefix: /api/tasks)

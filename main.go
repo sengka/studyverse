@@ -5,6 +5,9 @@ import (
 	"studyverse/models"
 	"studyverse/routes"
 
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -12,23 +15,33 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(".env dosyası yüklenemedi")
+		log.Fatal(".env dosyası yüklenemedi:", err)
 	}
 
-	// Veritabanını başlat (models.DB set edilir ve AutoMigrate burada yapılır)
+	log.Println("Veritabanı başlatılıyor...")
 	models.InitDB()
+	log.Println("Veritabanı başarıyla başlatıldı")
 
 	r := gin.Default()
 
-	// Global models.DB'yi context'e ekle
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:6060"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
 	r.Use(func(c *gin.Context) {
+		log.Printf("İstek alındı: %s %s", c.Request.Method, c.Request.URL)
 		c.Set("db", models.DB)
 		c.Next()
 	})
 
 	r.LoadHTMLGlob("templates/*")
-
+	log.Println("Rotalar yükleniyor...")
 	routes.SetupRoutes(r)
+	log.Println("Rotalar yüklendi")
 
 	log.Println("Sunucu başlatıldı: http://localhost:6060")
 	if err := r.Run(":6060"); err != nil {

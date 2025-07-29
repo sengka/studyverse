@@ -12,7 +12,6 @@
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     />
     <style>
-      /* Temel düzen */
       * {
         margin: 0;
         padding: 0;
@@ -28,7 +27,6 @@
         flex-direction: column;
       }
 
-      /* Navbar - attığın stilde birebir */
       nav {
         z-index: 1;
         display: flex;
@@ -79,7 +77,6 @@
         color: #6d4c41;
       }
 
-      /* Ana alan */
       main {
         flex: 1;
         margin: 1rem 2rem 2rem 2rem;
@@ -96,7 +93,6 @@
         max-width: 600px;
       }
 
-      /* Başlıklar */
       .gradient-text {
         background: linear-gradient(to right, #8d6e63, #a1887f);
         -webkit-background-clip: text;
@@ -115,7 +111,6 @@
         text-align: center;
       }
 
-      /* Tarih seçici */
       #datePicker {
         width: 100%;
         padding: 0.7rem 1rem;
@@ -126,7 +121,6 @@
         cursor: pointer;
       }
 
-      /* Form */
       .todo-form {
         display: flex;
         gap: 1rem;
@@ -156,7 +150,6 @@
         background-color: #4e342e;
       }
 
-      /* Görev listesi */
       .todo-list {
         list-style: none;
         max-height: 350px;
@@ -203,7 +196,6 @@
         background-color: #c62828;
       }
 
-      /* Geçmiş / tamamlanan görevler başlığı */
       .completed-title {
         margin-top: 2rem;
         font-weight: 600;
@@ -212,6 +204,7 @@
         padding-bottom: 0.3rem;
         color: #6d4c41;
       }
+
       footer {
         z-index: 1;
         text-align: center;
@@ -222,7 +215,6 @@
         margin-top: auto;
       }
 
-      /* Responsive */
       @media (max-width: 600px) {
         nav {
           flex-direction: column;
@@ -246,11 +238,10 @@
     </style>
   </head>
   <body>
-    <!-- Navbar -->
     <nav>
       <div class="nav-left">
         <div class="logo">StudyVerse</div>
-        <h2 class="welcome-message">Hoş geldin, {{ .Username }}!</h2>
+        <h2 class="welcome-message">İyi çalışmalar, {{ .Username }}!</h2>
       </div>
       <ul class="nav-links">
         <li><a href="/homepage">Ana Sayfa</a></li>
@@ -263,8 +254,7 @@
       </ul>
     </nav>
 
-    <!-- Ana içerik -->
-        <main>
+    <main>
       <section class="todo-container">
         <div class="gradient-text">Günlük Görevler</div>
         <div class="motto">
@@ -296,8 +286,12 @@
         <ul id="completedList" class="todo-list"></ul>
       </section>
     </main>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+    <footer>
+      <p>&copy; 2025 StudyVerse – Verimli çalışmanın adresi</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
       const todoForm = document.getElementById("todoForm");
       const todoInput = document.getElementById("todoInput");
@@ -307,8 +301,7 @@
       // Tarih seçici
       const datePicker = flatpickr("#datePicker", {
         defaultDate: new Date(),
-        dateFormat: "Y-m-d", // API'nin beklediği format
-        // maxDate: "today", // Kaldırdım, API ileri tarih destekliyorsa
+        dateFormat: "Y-m-d",
         onChange: (selectedDates, dateStr) => {
           if (dateStr) {
             loadTodos(dateStr);
@@ -319,24 +312,50 @@
       // Görevleri yükle
       async function loadTodos(date) {
         try {
+          console.log(`Görevler yükleniyor: date=${date}`);
           const response = await fetch(
-            `http://localhost:6060/calendar?date=${encodeURIComponent(date)}`
+            `http://localhost:6060/api/tasks?date=${encodeURIComponent(date)}`,
+            {
+              credentials: "include",
+            }
           );
-          if (!response.ok)
-            throw new Error(`Görevler yüklenemedi: ${response.status}`);
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Görevler yüklenemedi: ${response.status}, ${JSON.stringify(
+                errorData
+              )}`
+            );
+          }
           const data = await response.json();
-          renderTodosFromAPI(data.tasks || []);
+          console.log("API'den gelen veri:", data);
+          if (!data.tasks) {
+            console.warn(
+              "Hata: data.tasks tanımlı değil, boş dizi kullanılacak",
+              data
+            );
+            renderTodosFromAPI([]);
+            return;
+          }
+          renderTodosFromAPI(data.tasks);
         } catch (err) {
-          console.error(err);
-          todoList.innerHTML = `<li style="color:red; padding:10px;">Görevler yüklenirken hata oluştu.</li>`;
+          console.error("Hata:", err);
+          todoList.innerHTML = `<li style="color:red; padding:10px;">Görevler yüklenirken hata oluştu: ${err.message}</li>`;
           completedList.innerHTML = "";
         }
       }
 
-      // Görevleri ekrana bas
+      // Görevleri render et
       function renderTodosFromAPI(tasks) {
         todoList.innerHTML = "";
         completedList.innerHTML = "";
+
+        if (!tasks) {
+          console.error("Hata: tasks parametresi tanımlı değil");
+          todoList.innerHTML =
+            '<li style="color:red; padding:10px;">Görevler yüklenemedi: Veri eksik</li>';
+          return;
+        }
 
         if (tasks.length === 0) {
           todoList.innerHTML =
@@ -344,15 +363,23 @@
           return;
         }
 
-        tasks.forEach((todo) => {
+        console.log("API'den gelen görevler:", tasks);
+
+        tasks.forEach((todo, index) => {
+          console.log(`Görev ${index}:`, JSON.stringify(todo, null, 2)); // Tam nesneyi logla
+          if (!todo.id && todo.id !== 0) {
+            console.error(`Hata: Görev ${index} için todo.id tanımsız`, todo);
+            return; // ID yoksa bu görevi atla
+          }
+
           const li = document.createElement("li");
           li.classList.add("todo-item");
           if (todo.done) li.classList.add("done");
 
           const span = document.createElement("span");
-          span.textContent = todo.text;
+          span.textContent = todo.content;
           span.style.cursor = "pointer";
-          span.addEventListener("click", () => toggleDone(todo.id));
+          span.addEventListener("click", () => toggleDone(todo.id, !todo.done));
 
           const btn = document.createElement("button");
           btn.textContent = "Sil";
@@ -369,52 +396,98 @@
         });
       }
 
-      // Görev ekleme
+      // Yeni görev ekle
       async function addTodo(date, text) {
+        if (!date || !text) {
+          alert("Lütfen tarih ve görev içeriği girin.");
+          return;
+        }
         try {
-          const response = await fetch(`http://localhost:6060/calendar`, {
+          console.log(`Yeni görev ekleniyor: date=${date}, content=${text}`);
+          const response = await fetch(`http://localhost:6060/api/tasks`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ date, text }),
+            credentials: "include",
+            body: JSON.stringify({ date, content: text }),
           });
-          if (!response.ok)
-            throw new Error(`Görev eklenemedi: ${response.status}`);
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Görev eklenemedi: ${response.status}, ${JSON.stringify(
+                errorData
+              )}`
+            );
+          }
           await loadTodos(date);
         } catch (err) {
-          console.error(err);
-          alert("Görev eklenirken hata oluştu.");
+          console.error("Hata:", err);
+          alert("Görev eklenirken hata oluştu: " + err.message);
         }
       }
 
-      // Görev tamamla / tamamlama durumunu değiştir
-      async function toggleDone(id) {
+      // Görev durumunu güncelle
+      async function toggleDone(id, newDoneStatus) {
+        if (!id && id !== 0) {
+          console.error("Geçersiz ID:", id);
+          alert("Görev durumu güncellenemedi: Geçersiz görev ID'si");
+          return;
+        }
         try {
-          const response = await fetch(
-            `http://localhost:6060/calendar/${id}/toggle`,
-            { method: "PUT" }
+          console.log(
+            `Görev durumu güncelleniyor: id=${id}, done=${newDoneStatus}`
           );
-          if (!response.ok)
-            throw new Error(`Durum güncellenemedi: ${response.status}`);
+          const response = await fetch(
+            `http://localhost:6060/api/tasks/${id}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ done: newDoneStatus }),
+            }
+          );
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Durum güncellenemedi: ${response.status}, ${JSON.stringify(
+                errorData
+              )}`
+            );
+          }
           await loadTodos(datePicker.input.value);
         } catch (err) {
-          console.error(err);
-          alert("Görev durumu güncellenirken hata oluştu.");
+          console.error("Hata:", err);
+          alert("Görev durumu güncellenirken hata oluştu: " + err.message);
         }
       }
 
-      // Görev silme
+      // Görev sil
       async function deleteTodo(id) {
+        if (!id && id !== 0) {
+          console.error("Geçersiz ID:", id);
+          alert("Görev silinemedi: Geçersiz görev ID'si");
+          return;
+        }
         try {
+          console.log(`Görev siliniyor: id=${id}`);
           const response = await fetch(
-            `http://localhost:6060/calendar/${id}`,
-            { method: "DELETE" }
+            `http://localhost:6060/api/tasks/${id}`,
+            {
+              method: "DELETE",
+              credentials: "include",
+            }
           );
-          if (!response.ok)
-            throw new Error(`Görev silinemedi: ${response.status}`);
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Görev silinemedi: ${response.status}, ${JSON.stringify(
+                errorData
+              )}`
+            );
+          }
           await loadTodos(datePicker.input.value);
         } catch (err) {
-          console.error(err);
-          alert("Görev silinirken hata oluştu.");
+          console.error("Hata:", err);
+          alert("Görev silinirken hata oluştu: " + err.message);
         }
       }
 
@@ -422,31 +495,25 @@
       todoForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const selectedDate = datePicker.input.value;
+        const text = todoInput.value.trim();
         if (!selectedDate) {
           alert("Lütfen önce bir tarih seçin.");
           return;
         }
-        const text = todoInput.value.trim();
-        if (!text) return;
+        if (!text) {
+          alert("Lütfen bir görev girin.");
+          return;
+        }
         addTodo(selectedDate, text);
         todoInput.value = "";
       });
 
       // Sayfa yüklendiğinde varsayılan tarihi al ve görevleri yükle
       window.addEventListener("DOMContentLoaded", () => {
-        const today = datePicker.input.value;
-        if (today) loadTodos(today);
+        const today =
+          datePicker.input.value || new Date().toISOString().split("T")[0];
+        loadTodos(today);
       });
     </script>
-
-    <footer>
-      <p>&copy; 2025 StudyVerse – Verimli çalışmanın adresi</p>
-    </footer>
-  </body>
-</html>
-
-    <footer>
-      <p>&copy; 2025 StudyVerse – Verimli çalışmanın adresi</p>
-    </footer>
   </body>
 </html>
