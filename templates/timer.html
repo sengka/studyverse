@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>StudyVerse - Kronometre</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      body {
+        background-color: #fff5e0;
+        color: #3e3e3e;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      nav {
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: rgba(235, 227, 217, 0.85);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        margin: 1rem 2rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .logo {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #3e3e3e;
+        letter-spacing: 2px;
+      }
+
+      .welcome-message {
+        font-size: 1rem;
+        color: #3e3e3e;
+        font-weight: 600;
+        margin-top: 0.25rem;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1.2rem;
+      }
+
+      .nav-links li a {
+        text-decoration: none;
+        color: #3e3e3e;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links li a:hover {
+        color: #6d4c41;
+      }
+
+      main {
+        flex: 1;
+        margin: 1rem 2rem 2rem 2rem;
+        display: flex;
+        justify-content: center;
+      }
+
+      .timer-container {
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        width: 100%;
+        max-width: 600px;
+      }
+
+      .gradient-text {
+        background: linear-gradient(to right, #8d6e63, #a1887f);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .motto {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: #555;
+        text-align: center;
+      }
+
+      #datePicker {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 1.5rem;
+        cursor: pointer;
+      }
+
+      .timer-display {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #3e3e3e;
+      }
+
+      .timer-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .timer-controls button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #startBtn {
+        background-color: #6d4c41;
+        color: #fff;
+      }
+
+      #startBtn:hover {
+        background-color: #4e342e;
+      }
+
+      #stopBtn {
+        background-color: #e57373;
+        color: #fff;
+      }
+
+      #stopBtn:hover {
+        background-color: #c62828;
+      }
+
+      #resetBtn {
+        background-color: #a1887f;
+        color: #fff;
+      }
+
+      #resetBtn:hover {
+        background-color: #8d6e63;
+      }
+
+      #saveBtn {
+        background-color: #6d4c41;
+        color: #fff;
+      }
+
+      #saveBtn:hover {
+        background-color: #4e342e;
+      }
+
+      .timelog-list {
+        list-style: none;
+        max-height: 350px;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+      }
+
+      .timelog-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f9f6f2;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .timelog-item span {
+        flex: 1;
+        user-select: none;
+      }
+
+      .timelog-title {
+        margin-top: 2rem;
+        font-weight: 600;
+        font-size: 1.2rem;
+        border-bottom: 2px solid #6d4c41;
+        padding-bottom: 0.3rem;
+        color: #6d4c41;
+      }
+
+      footer {
+        z-index: 1;
+        text-align: center;
+        padding: 1rem 0;
+        background-color: rgba(235, 227, 217, 0.85);
+        color: #3e3e3e;
+        font-size: 0.95rem;
+        margin-top: auto;
+      }
+
+      @media (max-width: 600px) {
+        nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .nav-links {
+          flex-direction: column;
+          gap: 0.5rem;
+          margin-top: 0.5rem;
+        }
+
+        .timer-controls {
+          flex-direction: column;
+        }
+
+        .timer-controls button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-left">
+        <div class="logo">StudyVerse</div>
+        <h2 class="welcome-message">İyi çalışmalar, {{ .Username }}!</h2>
+      </div>
+      <ul class="nav-links">
+        <li><a href="/homepage">Ana Sayfa</a></li>
+        <li><a href="/notes">Notlarım</a></li>
+        <li><a href="/calendar">Takvim</a></li>
+        <li><a href="/todo">Görevlerim</a></li>
+        <li><a href="/timer">Kronometre</a></li>
+        <li><a href="/analysis">Analiz</a></li>
+        <li><a href="/logout">Çıkış Yap</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="timer-container">
+        <div class="gradient-text">Kronometre</div>
+        <div class="motto">
+          Çalışma süreni ölç, kaydet ve geçmiş verilerini incele.
+        </div>
+
+        <input
+          type="text"
+          id="datePicker"
+          placeholder="Tarih seç..."
+          readonly
+        />
+
+        <div class="timer-display" id="timerDisplay">00:00:00</div>
+
+        <div class="timer-controls">
+          <button id="startBtn">Başlat</button>
+          <button id="stopBtn">Durdur</button>
+          <button id="resetBtn">Sıfırla</button>
+          <button id="saveBtn">Kaydet</button>
+        </div>
+
+        <div class="timelog-title">Çalışma Kayıtları</div>
+        <ul id="timelogList" class="timelog-list"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 StudyVerse – Verimli çalışmanın adresi</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+      const datePicker = flatpickr("#datePicker", {
+        defaultDate: new Date(),
+        dateFormat: "Y-m-d",
+        onChange: (selectedDates, dateStr) => {
+          if (dateStr) {
+            loadTimelogs(dateStr);
+          }
+        },
+      });
+
+      const timerDisplay = document.getElementById("timerDisplay");
+      const startBtn = document.getElementById("startBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const saveBtn = document.getElementById("saveBtn");
+      const timelogList = document.getElementById("timelogList");
+
+      let seconds = 0;
+      let timerInterval = null;
+
+      function updateTimerDisplay() {
+        const hrs = Math.floor(seconds / 3600)
+          .toString()
+          .padStart(2, "0");
+        const mins = Math.floor((seconds % 3600) / 60)
+          .toString()
+          .padStart(2, "0");
+        const secs = (seconds % 60).toString().padStart(2, "0");
+        timerDisplay.textContent = `${hrs}:${mins}:${secs}`;
+      }
+
+      startBtn.addEventListener("click", () => {
+        if (!timerInterval) {
+          timerInterval = setInterval(() => {
+            seconds++;
+            updateTimerDisplay();
+          }, 1000);
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+          resetBtn.disabled = false;
+          saveBtn.disabled = true;
+        }
+      });
+
+      stopBtn.addEventListener("click", () => {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          saveBtn.disabled = seconds === 0;
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        seconds = 0;
+        updateTimerDisplay();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        resetBtn.disabled = true;
+        saveBtn.disabled = true;
+      });
+
+      saveBtn.addEventListener("click", () => {
+        const selectedDate = datePicker.input.value;
+        if (!selectedDate) {
+          alert("Lütfen önce bir tarih seçin.");
+          return;
+        }
+        if (seconds === 0) {
+          alert("Lütfen önce çalışma süresi ölçün.");
+          return;
+        }
+        const minutes = Math.round(seconds / 60);
+        saveTimelog(selectedDate, minutes);
+      });
+
+      async function saveTimelog(date, duration) {
+        try {
+          console.log(
+            `Çalışma süresi kaydediliyor: date=${date}, duration=${duration}`
+          );
+          const response = await fetch(`http://localhost:6060/api/timelogs`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ date, duration }),
+          });
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Süre kaydedilemedi: ${response.status}, ${JSON.stringify(
+                errorData
+              )}`
+            );
+          }
+          seconds = 0;
+          updateTimerDisplay();
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          resetBtn.disabled = true;
+          saveBtn.disabled = true;
+          await loadTimelogs(date);
+        } catch (err) {
+          console.error("Hata:", err);
+          alert("Çalışma süresi kaydedilirken hata oluştu: " + err.message);
+        }
+      }
+
+      async function loadTimelogs(date) {
+        try {
+          console.log(`Çalışma kayıtları yükleniyor: date=${date}`);
+          const response = await fetch(
+            `http://localhost:6060/api/timelogs?date=${encodeURIComponent(
+              date
+            )}`,
+            {
+              credentials: "include",
+            }
+          );
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Kayıtlar yüklenemedi: ${response.status}, ${JSON.stringify(
+                errorData
+              )}`
+            );
+          }
+          const data = await response.json();
+          console.log("API'den gelen veri:", data);
+          if (!data.timelogs) {
+            console.warn(
+              "Hata: data.timelogs tanımlı değil, boş dizi kullanılacak",
+              data
+            );
+            renderTimelogs([]);
+            return;
+          }
+          renderTimelogs(data.timelogs);
+        } catch (err) {
+          console.error("Hata:", err);
+          timelogList.innerHTML = `<li style="color:red; padding:10px;">Kayıtlar yüklenirken hata oluştu: ${err.message}</li>`;
+        }
+      }
+
+      function renderTimelogs(timelogs) {
+        timelogList.innerHTML = "";
+        if (!timelogs || timelogs.length === 0) {
+          timelogList.innerHTML =
+            '<li style="color:#777; padding:10px;">Bu tarihte çalışma kaydı yok.</li>';
+          return;
+        }
+
+        console.log("API'den gelen timelogs:", timelogs);
+
+        timelogs.forEach((log, index) => {
+          console.log(`Kayıt ${index}:`, JSON.stringify(log, null, 2));
+          const li = document.createElement("li");
+          li.classList.add("timelog-item");
+          const span = document.createElement("span");
+          span.textContent = `${log.date}: ${log.duration} dakika`;
+          li.appendChild(span);
+          timelogList.appendChild(li);
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const today =
+          datePicker.input.value || new Date().toISOString().split("T")[0];
+        loadTimelogs(today);
+        stopBtn.disabled = true;
+        resetBtn.disabled = true;
+        saveBtn.disabled = true;
+      });
+    </script>
+  </body>
+</html>
