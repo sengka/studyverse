@@ -82,4 +82,24 @@ func SetupRoutes(r *gin.Engine) {
 	taskGroup.POST("", controllers.CreateTask)       // POST /api/tasks
 	taskGroup.PUT("/:id", controllers.UpdateTask)    // PUT /api/tasks/:id
 	taskGroup.DELETE("/:id", controllers.DeleteTask) // DELETE /api/tasks/:id
+
+	// Timer sayfası için route
+	auth.GET("/timer", func(c *gin.Context) {
+		db, _ := c.MustGet("db").(*gorm.DB)
+		userID, _ := c.Cookie("user_id")
+		uid64, _ := strconv.ParseUint(userID, 10, 32)
+
+		var user models.User
+		if err := db.First(&user, uint(uid64)).Error; err != nil {
+			c.Redirect(http.StatusFound, "/login")
+			return
+		}
+
+		c.HTML(http.StatusOK, "timer.html", gin.H{
+			"Username": user.Username,
+		})
+	})
+	r.POST("/api/timelogs", controllers.SaveTimelog)
+	r.GET("/api/timelogs", controllers.GetTimelogs)
+
 }
