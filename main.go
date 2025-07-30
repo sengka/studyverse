@@ -4,6 +4,7 @@ import (
 	"log"
 	"studyverse/models"
 	"studyverse/routes"
+	"studyverse/services" // burada servisleri ekliyoruz
 
 	"time"
 
@@ -21,6 +22,14 @@ func main() {
 	log.Println("Veritabanı başlatılıyor...")
 	models.InitDB()
 	log.Println("Veritabanı başarıyla başlatıldı")
+
+	// Günlük görev hatırlatma e-postalarını arka planda başlatıyoruz
+	go func() {
+		for {
+			services.CheckAndSendDailyTasks(models.DB)
+			time.Sleep(24 * time.Hour)
+		}
+	}()
 
 	r := gin.Default()
 
