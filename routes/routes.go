@@ -151,4 +151,20 @@ func SetupRoutes(r *gin.Engine) {
 	notesGroup.PUT("/:id", controllers.UpdateNote)
 	notesGroup.DELETE("/folders/:id", controllers.DeleteFolder)
 	notesGroup.DELETE("/:id", controllers.DeleteNote)
+
+	auth.GET("/analysis", func(c *gin.Context) {
+		db, _ := c.MustGet("db").(*gorm.DB)
+		userID, _ := c.Cookie("user_id")
+		uid64, _ := strconv.ParseUint(userID, 10, 32)
+
+		var user models.User
+		if err := db.First(&user, uint(uid64)).Error; err != nil {
+			c.Redirect(http.StatusFound, "/login")
+			return
+		}
+
+		c.HTML(http.StatusOK, "analysis.html", gin.H{
+			"Username": user.Username,
+		})
+	})
 }
